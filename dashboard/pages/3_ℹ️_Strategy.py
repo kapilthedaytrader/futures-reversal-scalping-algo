@@ -42,15 +42,28 @@ st.markdown("""
     border-radius: 12px;
     padding: 20px 24px;
     margin-bottom: 16px;
+    color: #CBD5E1;
+    line-height: 1.7;
+}
+.card b {
+    color: #E2E8F0;
+}
+.card ul {
+    margin: 8px 0 0 0;
+    padding-left: 18px;
+}
+.card li {
+    margin-bottom: 4px;
 }
 .tag {
     display: inline-block;
     background: #0F1117;
-    border: 1px solid #2D3748;
+    border: 1px solid #475569;
     border-radius: 6px;
     padding: 3px 10px;
     font-size: 0.8rem;
     margin: 3px;
+    color: #94A3B8 !important;
     color: #94A3B8;
 }
 </style>
