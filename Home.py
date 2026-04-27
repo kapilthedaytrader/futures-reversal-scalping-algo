@@ -81,31 +81,24 @@ with st.sidebar:
 
     st.markdown("### 🔍 Filter")
 
-    # Data source quick-pick
-    source = st.radio(
+    # Source filter — maps directly to futures_runs.source column
+    source_label = st.radio(
         "Data source",
-        ["📊 Backtest", "📈 Paper Trading", "📅 Custom"],
+        ["📊 Backtest", "📈 Paper Trading", "📅 All"],
         index=0,
         label_visibility="collapsed",
     )
+    source_map = {
+        "📊 Backtest":      "backtest",
+        "📈 Paper Trading": "paper",
+        "📅 All":           None,
+    }
+    source_filter = source_map[source_label]
 
-    db_start, db_end = load_date_bounds()
-    today = date.today()
-
-    if source == "📊 Backtest":
-        # Show all historical runs (exclude last 30 days = paper)
-        d_start = date.fromisoformat(db_start)
-        d_end   = today - timedelta(days=30)
-    elif source == "📈 Paper Trading":
-        d_start = today - timedelta(days=90)
-        d_end   = today
-    else:
-        d_start = date.fromisoformat(db_start)
-        d_end   = today
-
-    if source == "📅 Custom":
-        d_start = st.date_input("From", value=d_start)
-        d_end   = st.date_input("To",   value=d_end)
+    # Date range — auto-fills to the actual bounds for the chosen source
+    db_start, db_end = load_date_bounds(source_filter)
+    d_start = st.date_input("From", value=date.fromisoformat(db_start))
+    d_end   = st.date_input("To",   value=date.fromisoformat(db_end))
 
     all_symbols = load_available_symbols()
     selected_symbols = st.multiselect(
@@ -121,7 +114,7 @@ with st.sidebar:
 
 # ── Load data ─────────────────────────────────────────────────────────────────
 
-df   = load_trades(str(d_start), str(d_end), selected_symbols or None)
+df   = load_trades(str(d_start), str(d_end), selected_symbols or None, source_filter)
 m    = compute_metrics(df)
 eq   = equity_curve_df(df)
 
